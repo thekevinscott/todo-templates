@@ -1,19 +1,131 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { format, getDay, addDays } from 'date-fns';
+
+const ROOT = "bear://x-callback-url/create";
+
+const createUrl = ({ title, text, tags }) => {
+  return encodeURI(`${ROOT}?title=${getTitle(title)}&text=${text}&tags=${tags}`);
+};
+
+const getTitle = title => {
+  const dayOfWeek = getDay(new Date());
+  let diff = days[title.toLowerCase()] - dayOfWeek;
+  if (diff < 0) {
+    diff = 5 - diff;
+  }
+  return format(addDays(new Date(), diff), "M/D/YY dddd");
+};
+
+const days = {
+  m: 1,
+  mon: 1,
+  monday: 1,
+
+  t: 2,
+  tue: 2,
+  tuesday: 2,
+
+  w: 3,
+  wed: 3,
+  wednesday: 3,
+
+  th: 4,
+  thu: 4,
+  thursday: 4,
+
+  f: 5,
+  fri: 5,
+  friday: 5,
+
+  s: 6,
+  sat: 6,
+  saturday: 6,
+
+  su: 0,
+  sun: 0,
+  sunday: 0,
+};
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      values: {
+        title: "Tuesday",
+        text: ["Goal", "Review", "Schedule", "Bucket"].map(head => `/${head}:/\n\n\n`).join("") + "\n\n",
+        tags: "todos",
+      },
+      output: null,
+    };
+  }
+
+  handleSubmit = e => {
+    e.preventDefault();
+
+    this.setState({
+      output: createUrl(this.state.values),
+    });
+  };
+
+  handleChange = e => {
+    this.setState({
+      output: null,
+      values: {
+        ...this.state.values,
+        [e.target.name]: e.target.value,
+      },
+    });
+  };
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <form onSubmit={this.handleSubmit}>
+        {[{
+          label: "Title",
+          name: "title",
+        }, {
+          label: "Text",
+          name: "text",
+          type: "textarea",
+        }, {
+          label: "Tags",
+          name: "tags",
+        }].map(({
+          label,
+          name,
+          type,
+        }) => {
+          if (type === "textarea") {
+            return (
+              <div key={name}>
+                <label>{label}:</label>
+                <textarea
+                  onChange={this.handleChange}
+                  type="text"
+                  name={name}
+                  value={this.state.values[name]}
+                />
+              </div>
+            );
+          }
+
+          return (
+            <div key={name}>
+              <label>{label}:</label>
+              <input
+                onChange={this.handleChange}
+                type="text"
+                name={name}
+                value={this.state.values[name]}
+              />
+            </div>
+          );
+        })}
+        <input type="submit" />
+        {this.state.output && (<a className="output" href={this.state.output}>Open Link for {this.state.values.title}</a>
+        )}
+      </form>
     );
   }
 }

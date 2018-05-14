@@ -1,5 +1,38 @@
 body {
   margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+}
+
+input, label, textarea {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+}
+
+label {
+  width: 70px;
+  display: inline-block;
+}
+
+input[type="text"], textarea {
+  padding: 5px 10px;
+  border: 1px solid rgba(0,0,0,0.2);
+  width: 300px;
+}
+
+textarea {
+  height: 200px;
+}
+
+form div {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+.output {
+  margin-top: 20px;
+  font-size: 24px;
+  display: block;
 }
