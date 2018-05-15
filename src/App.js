@@ -46,16 +46,32 @@ const days = {
   sunday: 0,
 };
 
+const KEY = "@todo-templates";
+
+const getInitialValues = () => {
+  const day = format(addDays(new Date(), 1), "dddd");
+  const initialValues = {
+    title: day,
+    text: ["Goal", "Review", "Schedule", "Bucket"].map(head => `/${head}:/\n\n\n`).join("") + "\n\n",
+    tags: "todos",
+  };
+
+  try {
+    return {
+      ...JSON.parse(localStorage[KEY]),
+      title: initialValues.title,
+    };
+  } catch (err) {
+    return initialValues;
+  }
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      values: {
-        title: "Tuesday",
-        text: ["Goal", "Review", "Schedule", "Bucket"].map(head => `/${head}:/\n\n\n`).join("") + "\n\n",
-        tags: "todos",
-      },
+      values: getInitialValues(),
       output: null,
     };
   }
@@ -69,12 +85,16 @@ class App extends Component {
   };
 
   handleChange = e => {
+    const values = {
+      ...this.state.values,
+      [e.target.name]: e.target.value,
+    };
+
+    localStorage[KEY] = JSON.stringify(values);
+
     this.setState({
       output: null,
-      values: {
-        ...this.state.values,
-        [e.target.name]: e.target.value,
-      },
+      values,
     });
   };
 
