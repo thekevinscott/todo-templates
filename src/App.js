@@ -3,8 +3,9 @@ import { format, getDay, addDays } from 'date-fns';
 
 const ROOT = "bear://x-callback-url/create";
 
-const createUrl = ({ title, text, tags }) => {
-  return encodeURI(`${ROOT}?title=${getTitle(title)}&text=${text}&tags=${tags}`);
+const createUrl = (args) => {
+  const qs = Object.entries(args).map(([key, val]) => `${key}=${encodeURIComponent(val)}`).join("&");
+  return `${ROOT}?${qs}`;
 };
 
 const getTitle = title => {
@@ -80,7 +81,10 @@ class App extends Component {
     e.preventDefault();
 
     this.setState({
-      output: createUrl(this.state.values),
+      output: createUrl({
+        ...this.state.values,
+        title: getTitle(this.state.values.title),
+      }),
     });
   };
 
