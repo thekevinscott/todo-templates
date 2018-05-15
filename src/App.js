@@ -52,7 +52,7 @@ const getInitialValues = () => {
   const day = format(addDays(new Date(), 1), "dddd");
   const initialValues = {
     title: day,
-    text: ["Goal", "Review", "Schedule", "Bucket"].map(head => `/${head}:/\n\n\n`).join("") + "\n\n",
+    text: ["Goal", "Review", "Schedule", "Bucket"].map(head => `## ${head}:\n\n\n`).join("") + "\n\n",
     tags: "todos",
   };
 
